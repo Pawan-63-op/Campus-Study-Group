@@ -1,0 +1,21 @@
+first to run this make sure you have a mysql set up with these tables . 
+
+create table users(
+userID bigint auto_increment primary key,
+username varchar(50) not null,
+email varchar(50) not null ,
+password varchar(250) not null,
+created_at Datetime
+);
+
+create table friend(
+	user1 bigint not null,
+    user2 bigint not null,
+    foreign key(user1) references users(userId),
+    foreign key(user2) references users(userId),
+    unique(user1,user2)
+    );
+
+and you have to edit configuration of the mysql in dbutils/sql_utl/db.js file . if you dont have mysql installed please get it . it will be used throughout the project for auth 
+secondly i havent tested the mongo db because i havent written any routes relating to it . but i have added schemas ( my  ideas ) for some nosql related tasks that you can use if you want 
+so go get a mongodb connection string from mongodbatlas or some cloud provider url and set it up in the next branch commit you are going to make .
