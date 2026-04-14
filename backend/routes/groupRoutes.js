@@ -10,7 +10,8 @@ import {
     accept_join_request,
     get_join_requests_for_my_group,
     get_groups_by_id_then_semantically,
-    create_groupChat
+    create_groupChat,
+    delete_groupChat
 } from "../controller/groupChatController.js";
 
 const router = express.Router();
@@ -19,9 +20,9 @@ router.use(identify);
 
 router.post("/create-group",create_groupChat);
 
-router.post("delete-post")
+// router.post("delete-post")
 
-router.post("delete-group")
+router.post("delete-group",delete_groupChat);
 
 router.post("/join", join_groupChat);
 
