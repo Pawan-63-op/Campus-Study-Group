@@ -1,17 +1,18 @@
 import { GroupChat } from "../models/groupChat.js";
 import { sql } from "../dbUtils/sql_utl/sql_connector.js";
+import redis from "../dbUtils/redisConnect.js";
 export async function join_groupChat(req,res){
     try {
         const user_id = req.user.userId
-        const group_chat_id = req.body.group_chat_id
-        if (!group_chat_id) {
+        const groupChatId = req.body.groupChatId
+        if (!groupChatId) {
             return res.status(400).json({
-                error: "group_chat_id is required",
+                error: "groupChatId is required",
                 status: "errored",
                 result: null,
             });
         }
-        const groupChat = await GroupChat.findById(group_chat_id);
+        const groupChat = await GroupChat.findById(groupChatId);
         if(!groupChat){
             return res.status(404).json({
                 error: "group chat not found ",
@@ -43,12 +44,12 @@ export async function join_groupChat(req,res){
         }
         // if the group chat requires admin validation or not .....
         // table looks like 
-        // group_chat_id , requester
+        // groupChatId , requester
         if(groupChat.requires_permission===true){
             const requests = await sql`
             select * 
             from groupChatRequest 
-            where group_chat_id=${group_chat_id} and requester_id = ${user_id}
+            where groupChatId=${groupChatId} and requester_id = ${user_id}
             `
             if(!requests || requests.length>0){
                 return res.status(409).json({
@@ -58,7 +59,7 @@ export async function join_groupChat(req,res){
                 });
             }
             const insertResult = await sql`
-            insert into groupChatRequest (group_chat_id,requester_id,email,username) values (${group_chat_id},${user_id},${user.email},${user.username})
+            insert into groupChatRequest (groupChatId,requester_id,email,username) values (${groupChatId},${user_id},${user.email},${user.username})
             `
             return res.status(200).json({
                 error:null,
@@ -205,10 +206,10 @@ export async function accept_join_request(req,res){
             });
         }
 
-        // insert into groupChatRequest (group_chat_id,requester_id,email,username)
+        // insert into groupChatRequest (groupChatId,requester_id,email,username)
         const requests = await sql`
         select * from 
-        groupChatRequest where  group_chat_id = ${groupId} and requester_id = ${requesterId}
+        groupChatRequest where  groupChatId = ${groupId} and requester_id = ${requesterId}
         `;
         if(!requests || requests.length==0){
             return res.status(401).json({
@@ -239,7 +240,7 @@ export async function accept_join_request(req,res){
         await group.save();
 
         const deleteRes = await sql`
-        delete from groupChatRequest where group_chat_id = ${groupId} and requester_id = ${requesterId}
+        delete from groupChatRequest where groupChatId = ${groupId} and requester_id = ${requesterId}
         `
         return res.status(201).json({
             status:"ok",
@@ -279,7 +280,7 @@ export async function get_join_requests_for_my_group(req,res){
             })
         }
         const requests = await sql`
-        select * from groupChatRequest where group_chat_id = ${groupId}
+        select * from groupChatRequest where groupChatId = ${groupId}
         `
         if (!requests) {
             return res.status(500).json({
@@ -340,6 +341,64 @@ export async function get_groups_by_id_then_semantically(req, res) {
     }  
 }
 
-// -> group chat handling . 
+export async function create_groupChat(req,res){
+    try{
+        const userId = req.user.userId;
+        if(!userId){
+            return res.status(403).json({
+                error : "no user found",
+                status : "errored",
+                result : null
+            });
+        } 
+        const newGroup = new GroupChat();
+        newGroup.group_admins = [];
+        newGroup.group_members = [];
+        newGroup.group_admins.push(userId);
+        newGroup.group_members.push(userId);
+        newGroup.messages = [];
+        await newGroup.save();
+        return res.status(201).json({
+            error: null,
+            status: "success",
+            result: newGroup
+        });
+    }catch(e){
+        console.error(e);
+        return res.status(500).json({
+            message:"internal server error"
+        });
+    }
+}
+
+export async function  delete_groupChat(req,res) {
+    try {
+        const userId = req.user.userId;
+        const groupChatId = req.body.groupChatId;
+        const group = await GroupChat.findById(groupChatId);
+        if(!group){
+            return res.status(404).json({
+                error :  " group not found"
+            });
+        }
+        if(!group.group_admins.map(String)?.includes(userId)){
+            return res.status(403).json({
+                error : "only admins can delete a group"
+            })
+        }
+        const deleteResult = await GroupChat.findByIdAndDelete(groupChatId);
+        return res.status(200).json({
+            status :  "successful",
+            result : deleteResult,
+            error : null
+        })
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({
+            message:"internal server error"
+        });
+    }
+}
+// -> group chat handling 
 // -> event/study session handling .
 // -> 
