@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 
 export async function connectToDatabase() {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/testDB';
+    const mongoURI =
+        process.env.MONGODB_URI;
     try {
         await mongoose.connect(mongoURI, {
             useNewUrlParser: true,

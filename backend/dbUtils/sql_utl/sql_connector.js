@@ -1,5 +1,5 @@
-import { pool} from "./db.js";
- function buildQuery(strings, values) {
+import { pool } from "./db.js";
+function buildQuery(strings, values) {
     let text = '';
     const params = [];
     for (let i = 0; i < strings.length; i++) {
@@ -18,7 +18,7 @@ export async function sql(strings, ...values) {
     const [rows] = await pool.execute(text, params);
     return rows;
 }
-export function txq(strings, ...values){
+export function txq(strings, ...values) {
     const { text, params } = buildQuery(strings, values);
     return { text, values: params };
 }
@@ -26,17 +26,17 @@ export function txq(strings, ...values){
 // usage -> sql_transact([txq`<textOfquery1>`,txq``,txq``])
 export async function sql_transact(queries) {
     const conn = await pool.getConnection();
-    try{
+    try {
         await conn.beginTransaction();
-        for(const query of queries){
-            await conn.execute(query.text,query.values);
+        for (const query of queries) {
+            await conn.execute(query.text, query.values);
         }
         await conn.commit();
-    }catch(e){
+    } catch (e) {
         conn.rollback();
         throw e;
     }
-    finally{
-        if(conn) conn.release();
+    finally {
+        if (conn) conn.release();
     }
 }

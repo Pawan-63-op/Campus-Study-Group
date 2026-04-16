@@ -1,5 +1,6 @@
 import { sql } from "../dbUtils/sql_utl/sql_connector.js";
-
+// depricated service .
+// wont be used at all.
 export async function sendFriendRequest(req, res) {
     try {
         const senderId = req.user.userID;

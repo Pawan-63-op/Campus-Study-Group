@@ -64,3 +64,5 @@ export async function registerHandler(req, res) {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+// tables ->
+// users  email 

@@ -6,6 +6,8 @@ const groupChatSchema = new mongoose.Schema({
     group_members : [{type:String,required:true}],
     group_name : {type:String,required:true},
     group_contents: [{type:String}],
+    group_topics:[{type:String}],
+    requires_permission:Boolean,
     messages: [
             {
                 message_id : {type:String,required:true},
@@ -16,5 +18,9 @@ const groupChatSchema = new mongoose.Schema({
             }
     ]
 });
-
+groupChatSchema.index({
+    group_name: "text",
+    group_topics: "text",
+    group_contents: "text"
+});
 export const GroupChat = mongoose.model('GroupChat',groupChatSchema);

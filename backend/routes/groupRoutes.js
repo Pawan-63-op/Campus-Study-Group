@@ -20,9 +20,8 @@ router.use(identify);
 
 router.post("/create-group",create_groupChat);
 
-// router.post("delete-post")
 
-router.post("delete-group",delete_groupChat);
+router.post("/delete-group",delete_groupChat);
 
 router.post("/join", join_groupChat);
 
