@@ -108,7 +108,7 @@ export async function get_groupChats_where_I_am_admin(req, res) {
             group_admins: userID
         });
         if (!groups) {
-            return res.status(500).json({
+            return res.status(200).json({
                 error: "failed to fetch groups",
                 status: "errored",
                 result: null,
@@ -325,7 +325,7 @@ export async function get_groups_by_id_then_semantically(req, res) {
 
             if (group) {
                 return res.status(200).json({
-                    result: [group],   
+                    result: [group],
                     status: "ok",
                     error: null
                 });
@@ -333,10 +333,17 @@ export async function get_groups_by_id_then_semantically(req, res) {
         }
 
         const results = await GroupChat.find({
-            $or: [
-                { group_name: { $regex: query, $options: "i" } },
-                { group_topics: { $regex: query, $options: "i" } },
-                { group_contents: { $regex: query, $options: "i" } }
+            $and: [
+                {
+                    $or: [
+                        { group_name: { $regex: query, $options: "i" } },
+                        { group_topics: { $regex: query, $options: "i" } },
+                        { group_contents: { $regex: query, $options: "i" } }
+                    ]
+                },
+                {
+                    group_members: { $ne: userId }
+                }
             ]
         });
 

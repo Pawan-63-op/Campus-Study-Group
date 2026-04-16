@@ -1,10 +1,7 @@
 import { sql } from "../dbUtils/sql_utl/sql_connector.js";
-import { GroupChat } from "../models/groupChatModel.js";
+import { GroupChat } from "../models/groupChat.js";
 import mongoose from "mongoose";
 
-// ==========================
-// UTIL: VALIDATE GROUP + MEMBERSHIP
-// ==========================
 
 async function validateGroupAndMember(groupChatId, userID) {
     if (!mongoose.Types.ObjectId.isValid(groupChatId)) {
@@ -26,9 +23,6 @@ async function validateGroupAndMember(groupChatId, userID) {
     return { group };
 }
 
-// ==========================
-// CREATE SESSION (ADMIN ONLY)
-// ==========================
 
 export async function create_session(req, res) {
     try {

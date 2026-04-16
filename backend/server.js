@@ -9,12 +9,18 @@ import dotenv from 'dotenv';
 import groupChatRouter from "../backend/routes/groupRoutes.js"
 import { connectToDatabase } from './dbUtils/mongoConnect.js';
 import sessionRoutes from "../backend/routes/sessionRoutes.js"
+import cookieParser from "cookie-parser";
+
 
 
 
 dotenv.config();
 const app = express();
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 app.use(express.json());
 await connectToDatabase();
 
@@ -54,8 +60,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/group', groupChatRouter);
 app.use('/api/sessions',sessionRoutes);
 
-
+const PORT = process.env.PORT_NUMBER || 5000
 if (process.env.NODE_ENV !== "test") {
-    app.listen(3000, () => console.log("Server running"));
+    app.listen(PORT, () => console.log(`server running on port number ${PORT}`));
 }
 export default app;
