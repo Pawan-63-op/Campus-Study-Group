@@ -20,6 +20,12 @@ const CreateGroupPage = () => {
     const handleCreate = (e) => {
         e.preventDefault();
         createGroupMutation(GroupData);
+        setGroupData({
+        group_name: "",
+        group_topics: [],
+        group_contents: [],
+        requires_permission: false
+    })
     };
 
     return (

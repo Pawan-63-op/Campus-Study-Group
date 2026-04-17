@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-const GroupCard = ({ group }) => {
+const GroupCardAdmin = ({ group }) => {
   return (
     <div className="card group bg-base-100 border border-base-300 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-xl h-full">
       
@@ -48,14 +48,14 @@ const GroupCard = ({ group }) => {
             to={`/chat/${group._id}`}
             className="btn btn-primary btn-outline w-full"
           >
-            Message
+            Manage Messages 
           </Link>
 
           <Link
-            to={`/sessions/${group._id}`}
+            to={`/AddSessions/${group._id}`}
             className="btn btn-primary btn-outline w-full"
           >
-            View Sessions
+            Add Session
           </Link>
         </div>
 
@@ -64,4 +64,4 @@ const GroupCard = ({ group }) => {
   );
 };
 
-export default GroupCard;
+export default GroupCardAdmin;

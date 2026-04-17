@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon } from "lucide-react";
 
 
-import GroupCard from "../components/GroupCard.jsx";
+import GroupCard from "../components/GroupCardAdmin.jsx";
 import NoGroupsFound from "../components/NoGroupsFound.jsx";
 import RoomCard from "../components/RoomCard.jsx";
 const AdminGroupsPage = () => {

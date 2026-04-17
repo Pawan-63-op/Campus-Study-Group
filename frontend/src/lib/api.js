@@ -12,7 +12,7 @@ export const signup = async (signupData) => {
   return response.data;
 };
 export const getMyAdminGroups = async() =>{
-  const response = await axiosInstance.post("/group/admin");
+  const response = await axiosInstance.get("/group/admin");
   console.log(response.data);
   return response.data.result;
 }

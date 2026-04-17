@@ -21,6 +21,7 @@ import PasswordResetPage from "./pages/PassWordResetPage.jsx";
 import CreateGroupPage from "./pages/CreateGroupPage.jsx";
 import AdminGroupsPage from "./pages/AdminGroupsPage.jsx";
 import SearchGroupsPage from "./pages/SearchGroupsPage.jsx";
+import AddSessionPage from "./pages/AddSessionPage.jsx";
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
   const { theme } = useThemeStore();
@@ -122,7 +123,16 @@ const App = () => {
           }
         />
 
-
+        <Route
+        path="/AddSessions/:groupId"
+        element = {
+          isAuthenticated ? (
+            <Layout showSidebar={true}>
+                <AddSessionPage />
+              </Layout>
+          ): (<Navigate to ="/login"/>)
+        }
+        />
 
 
         <Route
