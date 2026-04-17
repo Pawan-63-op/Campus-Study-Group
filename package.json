@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "dev": "nodemon backend/server.js",
-    "start": "node backend/server.js"
+    "start": "node backend/server.js",
+    "chat": "nodemon backend/chatServer.js"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^7.0.3",
     "mysql2": "^3.16.0",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "socket.io": "^4.8.3"
   }
 }

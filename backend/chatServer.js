@@ -1,14 +1,18 @@
 import http from "http"
 import express from "express"
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 import { Server } from "socket.io"
 //  we will use a bit of in memory store aswell... no problem
 import Redis from "ioredis";
-import { GroupChat } from "./models/groupChat";
+import { GroupChat } from "./models/groupChat.js";
 import jwt from "jsonwebtoken";
-import { sql } from "./dbUtils/sql_utl/sql_connector";
+import { sql } from "./dbUtils/sql_utl/sql_connector.js";
+import {connectToDatabase} from "../backend/dbUtils/mongoConnect.js"
+import { configDotenv } from "dotenv";
+await configDotenv();
 const app = express();
 const server = http.createServer(app);
+await connectToDatabase();
 const io = new Server(server, {
     cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] }
 });
@@ -43,6 +47,7 @@ io.on("connection", async (socket) => {
                 await pushToredis(groupChatId, message);
             }
         }
+        console.log(history);
 
         socket.emit("chat-history", history);
     });
