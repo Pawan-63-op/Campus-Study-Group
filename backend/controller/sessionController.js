@@ -28,6 +28,7 @@ export async function create_session(req, res) {
     try {
         const userID = String(req.user.userID);
         const { groupChatId, start_time, end_time, session_topic, venue } = req.body;
+
         if (!groupChatId) {
             return res.status(400).json({ error: "groupChatId required" });
         }
@@ -64,6 +65,7 @@ export async function create_session(req, res) {
                 error: "session overlaps with existing session"
             });
         }
+        console.log("its ok")
         const result = await sql`
             INSERT INTO session (groupChatId, start_time, end_time, session_topic, venue, created_by)
             VALUES (
@@ -110,10 +112,11 @@ export async function get_ongoing_sessions(req, res) {
         const sessions = await sql`
             SELECT * FROM session
             WHERE groupChatId = ${groupChatId}
-            AND start_time <= ${now}
-            AND (end_time IS NULL OR end_time >= ${now})
+            AND start_time <= NOW()
+            AND (end_time IS NULL OR end_time >= NOW())
             ORDER BY start_time DESC
         `;
+        console.log(sessions);
 
         return res.status(200).json({
             status: "success",
@@ -135,15 +138,17 @@ export async function get_completed_sessions(req, res) {
             return res.status(validation.status).json({ error: validation.error });
         }
 
+
         const now = new Date();
 
         const sessions = await sql`
             SELECT * FROM session
             WHERE groupChatId = ${groupChatId}
             AND end_time IS NOT NULL
-            AND end_time < ${now}
+            AND end_time < NOW()
             ORDER BY end_time DESC
         `;
+        console.log(sessions);
 
         return res.status(200).json({
             status: "success",
@@ -172,9 +177,11 @@ export async function get_upcoming_sessions(req, res) {
         const sessions = await sql`
             SELECT * FROM session
             WHERE groupChatId = ${groupChatId}
-            AND start_time > ${now}
+            AND start_time > NOW()
             ORDER BY start_time ASC
         `;
+        // const sessions = await sql `select * from session`;
+        console.log(sessions);
 
         return res.status(200).json({
             status: "success",

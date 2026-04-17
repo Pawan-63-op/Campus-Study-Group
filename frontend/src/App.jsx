@@ -22,6 +22,7 @@ import CreateGroupPage from "./pages/CreateGroupPage.jsx";
 import AdminGroupsPage from "./pages/AdminGroupsPage.jsx";
 import SearchGroupsPage from "./pages/SearchGroupsPage.jsx";
 import AddSessionPage from "./pages/AddSessionPage.jsx";
+import ViewSessionsPage from "./pages/ViewSessionsPage.jsx";
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
   const { theme } = useThemeStore();
@@ -124,16 +125,26 @@ const App = () => {
         />
 
         <Route
-        path="/AddSessions/:groupId"
-        element = {
-          isAuthenticated ? (
-            <Layout showSidebar={true}>
+          path="/AddSessions/:groupId"
+          element={
+            isAuthenticated ? (
+              <Layout showSidebar={true}>
                 <AddSessionPage />
               </Layout>
-          ): (<Navigate to ="/login"/>)
-        }
+            ) : (<Navigate to="/login" />)
+          }
         />
 
+        <Route
+          path="/sessions/:groupId"
+          element={
+            isAuthenticated ? (
+              <Layout showSidebar={true}>
+                <ViewSessionsPage />
+              </Layout>
+            ) : (<Navigate to="/login" />)
+          }
+        />
 
         <Route
           path="/friends"
