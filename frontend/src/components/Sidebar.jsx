@@ -30,7 +30,7 @@ const Sidebar = () => {
         {/* admin groups start */}
         <Link
           to="/adminGroups"
-          className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/CreateGroup" ? "btn-active" : ""
+          className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/adminGroups" ? "btn-active" : ""
             }`}
         >
           <Shield className="size-5 text-base-content opacity-70" />
@@ -69,7 +69,7 @@ const Sidebar = () => {
 
         <Link
           to="/SearchGroup"
-          className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/addFriends" ? "btn-active" : ""
+          className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/SearchGroup" ? "btn-active" : ""
             }`}
         >
           <SearchIcon className="size-5 text-base-content opacity-70" />

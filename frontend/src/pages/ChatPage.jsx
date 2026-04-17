@@ -2,14 +2,59 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import useAuthUser from "../hooks/useAuthUser";
+import MessageCard from "../components/MessageCard.jsx";
 
 const socket = io("http://localhost:5002");
 
-const ChatPage = ({  }) => {
-  // return { isLoading: authUser.isLoading, authUser: authUser.data?.user };
-  const{ isLoading, authUser } = useAuthUser();
-  const userId = authUser.userID;
+// 🔥 correct type detection from File
+const getFileTypeFromFile = (file) => {
+  const type = file.type;
+
+  if (type.startsWith("image/")) return "image";
+  if (type.startsWith("video/")) return "video";
+  if (type.startsWith("audio/")) return "audio";
+  if (type === "application/pdf") return "pdf";
+
+  return "other";
+};
+
+// 🔥 upload function
+const uploadToCloudinary = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "chat_uploads");
+
+  console.log("Uploading:", file.name);
+
+  const res = await fetch(
+    "https://api.cloudinary.com/v1_1/ddj28rrje/auto/upload",
+    {
+      method: "POST",
+      body: formData
+    }
+  );
+
+  const data = await res.json();
+
+  if (!data.secure_url) {
+    throw new Error("Upload failed");
+  }
+
+  const file_type = getFileTypeFromFile(file); // ✅ FIXED
+
+  console.log("Uploaded:", data.secure_url, file_type);
+
+  return {
+    url: data.secure_url,
+    type: file_type
+  };
+};
+
+const ChatPage = () => {
+  const { isLoading, authUser } = useAuthUser();
   const { id: groupChatId } = useParams();
+
+  const userId = authUser?.userID;
 
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
@@ -19,6 +64,8 @@ const ChatPage = ({  }) => {
 
   // 🔥 JOIN + LISTEN
   useEffect(() => {
+    if (!groupChatId) return;
+
     socket.emit("join-group-chat", { groupChatId });
 
     socket.on("chat-history", (history) => {
@@ -42,16 +89,23 @@ const ChatPage = ({  }) => {
 
   // 🔥 SEND MESSAGE
   const handleSend = async () => {
+    console.log("SEND CLICKED", files);
+
     if (!content && files.length === 0) return;
 
-    const fetchables = [];
+    let fetchables = [];
 
-    for (const file of files) {
-      const base64 = await toBase64(file);
-      fetchables.push(base64);
+    try {
+      fetchables = await Promise.all(
+        files.map((file) => uploadToCloudinary(file))
+      );
+    } catch (err) {
+      console.error("Upload error:", err);
+      return; // stop if upload fails
     }
 
     const message = {
+      message_id: Date.now().toString(),
       sender_id: userId,
       content,
       fetchables,
@@ -63,12 +117,19 @@ const ChatPage = ({  }) => {
       message
     });
 
-    // optimistic UI
     setMessages((prev) => [...prev, message]);
 
     setContent("");
     setFiles([]);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -76,38 +137,11 @@ const ChatPage = ({  }) => {
       {/* MESSAGES */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((msg, idx) => (
-          <div
+          <MessageCard
             key={msg.message_id || idx}
-            className={`chat ${
-              msg.sender_id === userId ? "chat-end" : "chat-start"
-            }`}
-          >
-            <div className="chat-bubble">
-
-              {/* TEXT */}
-              {msg.content && <p>{msg.content}</p>}
-
-              {/* FILES */}
-              {msg.fetchables?.length > 0 && (
-                <div className="mt-2 space-y-2">
-                  {msg.fetchables.map((file, i) => (
-                    <img
-                      key={i}
-                      src={file}
-                      alt="upload"
-                      className="max-w-xs rounded"
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* TIME */}
-              <div className="text-[10px] opacity-60 mt-1">
-                {new Date(msg.timestamp).toLocaleTimeString()}
-              </div>
-
-            </div>
-          </div>
+            msg={msg}
+            isOwn={msg.sender_id === userId}
+          />
         ))}
         <div ref={bottomRef} />
       </div>
@@ -126,10 +160,18 @@ const ChatPage = ({  }) => {
         <input
           type="file"
           multiple
-          onChange={(e) => setFiles([...e.target.files])}
+          onChange={(e) => {
+            const selected = Array.from(e.target.files);
+            console.log("FILES SELECTED:", selected);
+            setFiles(selected);
+          }}
         />
 
-        <button className="btn btn-primary" onClick={handleSend}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={handleSend}
+        >
           Send
         </button>
       </div>
@@ -138,14 +180,3 @@ const ChatPage = ({  }) => {
 };
 
 export default ChatPage;
-
-
-// 🔧 helper
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
-}
