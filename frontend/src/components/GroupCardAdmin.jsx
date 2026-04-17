@@ -45,7 +45,7 @@ const GroupCardAdmin = ({ group }) => {
         {/* Buttons pinned to bottom */}
         <div className="mt-auto flex flex-col gap-2">
           <Link
-            to={`/chat/${group._id}`}
+            to={`/Managechat/${group._id}`}
             className="btn btn-primary btn-outline w-full"
           >
             Manage Messages 

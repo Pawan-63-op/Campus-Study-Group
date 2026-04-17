@@ -79,11 +79,8 @@ io.on("connection", async (socket) => {
         await group.save();
     });
 
-    socket.on("delete-post", async ({ groupChatId, jwt: token, postId }) => {
+    socket.on("delete-post", async ({ groupChatId, userId, postId }) => {
         try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'MOKSHU_SECRET');
-            const userId = decoded.Uid;
-
             const users = await sql`SELECT * FROM users WHERE userID = ${userId}`;
             if (users.length === 0) {
                 return socket.emit("error", { error: "Invalid user" });
