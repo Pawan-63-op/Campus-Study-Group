@@ -27,7 +27,7 @@ const SignUpPage = () => {
           <div className="mb-4 flex items-center justify-start gap-2">
             <ShipWheelIcon className="size-9 text-primary" />
             <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
-              LiveColab 
+              Campus Study Group
             </span>
           </div>
 
@@ -44,7 +44,7 @@ const SignUpPage = () => {
                 <div>
                   <h2 className="text-xl font-semibold">Create an Account</h2>
                   <p className="text-sm opacity-70">
-                    Join LiveColab and start collaborating with people...
+                    Join Campus Study Group and start collaborating with people...
                   </p>
                 </div>
 
@@ -59,7 +59,9 @@ const SignUpPage = () => {
                       placeholder="John Doe"
                       className="input input-bordered w-full"
                       value={signupData.username}
-                      onChange={(e) => setSignupData({ ...signupData, username: e.target.value })}
+                      onChange={(e) =>
+                        setSignupData({ ...signupData, username: e.target.value })
+                      }
                       required
                     />
                   </div>
@@ -72,7 +74,9 @@ const SignUpPage = () => {
                       placeholder="john@gmail.com"
                       className="input input-bordered w-full"
                       value={signupData.email}
-                      onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
+                      onChange={(e) =>
+                        setSignupData({ ...signupData, email: e.target.value })
+                      }
                       required
                     />
                   </div>
@@ -85,7 +89,9 @@ const SignUpPage = () => {
                       placeholder="********"
                       className="input input-bordered w-full"
                       value={signupData.password}
-                      onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
+                      onChange={(e) =>
+                        setSignupData({ ...signupData, password: e.target.value })
+                      }
                       required
                     />
                     <p className="text-xs opacity-70 mt-1">
@@ -125,13 +131,13 @@ const SignUpPage = () => {
                   </p>
                 </div>
 
-                  <div className="text-center mt-4">
+                <div className="text-center mt-4">
                   <p className="text-sm">
                     Already have an account?{" "}
                     <Link to="/login" className="text-primary hover:underline">
                       Sign in
                     </Link>
-                  </p>   
+                  </p>
                 </div>
               </div>
             </form>
@@ -147,10 +153,10 @@ const SignUpPage = () => {
             </div>
 
             <div className="text-center space-y-3 mt-6">
-              <h2 className="text-xl font-semibold">Connect with people or your friends to code...</h2>
-              <p className="opacity-70">
-                Code and Conquer 
-              </p>
+              <h2 className="text-xl font-semibold">
+                Connect with people or your friends to code...
+              </h2>
+              <p className="opacity-70">Code and Conquer</p>
             </div>
           </div>
         </div>
