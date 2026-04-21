@@ -150,9 +150,9 @@ const AddSessionPage = () => {
                         </div>
 
                         <div className="text-center space-y-3 mt-6">
-                            <h2 className="text-xl font-semibold">May this  group lead to Best Future Ahead</h2>
+                            <h2 className="text-xl font-semibold">Plan is the primary tool for productivity</h2>
                             <p className="opacity-70">
-                                channa mereya mereya ...
+                                Organize your sessions effectively
                             </p>
                         </div>
                     </div>

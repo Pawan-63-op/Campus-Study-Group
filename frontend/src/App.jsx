@@ -19,6 +19,7 @@ import SearchGroupsPage from "./pages/SearchGroupsPage.jsx";
 import AddSessionPage from "./pages/AddSessionPage.jsx";
 import ViewSessionsPage from "./pages/ViewSessionsPage.jsx";
 import ManageChatPage from "../src/pages/ManageChatPage.jsx";
+import GroupRequestsPage from "../src/pages/GroupRequestsPage.jsx";
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
   const { theme } = useThemeStore();
@@ -131,12 +132,6 @@ const App = () => {
           }
         />
 
-
-
-
-
-
-
         <Route
           path="/chat/:id"
           element={
@@ -149,7 +144,20 @@ const App = () => {
             )
           }
         />
-
+        {/* to={`/manageRequests/${group._id}`}
+         */}
+                 <Route
+          path="/manageRequests/:id"
+          element={
+            isAuthenticated && isVerified ? (
+              <Layout showSidebar={true} showNavBar={true}>
+                <GroupRequestsPage/>
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
         <Route
           path="/Managechat/:id"
           element={

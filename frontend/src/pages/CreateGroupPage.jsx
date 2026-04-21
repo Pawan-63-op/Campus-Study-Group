@@ -155,9 +155,9 @@ const CreateGroupPage = () => {
                         </div>
 
                         <div className="text-center space-y-3 mt-6">
-                            <h2 className="text-xl font-semibold">May this  group lead to Best Future Ahead</h2>
+                            <h2 className="text-xl font-semibold">May this  group lead to good grades</h2>
                             <p className="opacity-70">
-                                channa mereya mereya ...
+                                best things are done together...
                             </p>
                         </div>
                     </div>

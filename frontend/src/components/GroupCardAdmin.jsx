@@ -57,6 +57,14 @@ const GroupCardAdmin = ({ group }) => {
           >
             Add Session
           </Link>
+
+          <Link
+            to={`/manageRequests/${group._id}`}
+            className="btn btn-primary btn-outline w-full"
+          >
+            Manage Requests
+          </Link>
+
         </div>
 
       </div>
