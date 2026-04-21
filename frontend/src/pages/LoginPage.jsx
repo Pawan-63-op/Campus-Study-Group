@@ -28,7 +28,7 @@ const LoginPage = () => {
           <div className="mb-4 flex items-center justify-start gap-2">
             <ShipWheelIcon className="size-9 text-primary" />
             <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary  tracking-wider">
-              LiveColab
+              Campus Study Group
             </span>
           </div>
 
@@ -59,7 +59,9 @@ const LoginPage = () => {
                       placeholder="hello@example.com"
                       className="input input-bordered w-full"
                       value={loginData.email}
-                      onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                      onChange={(e) =>
+                        setLoginData({ ...loginData, email: e.target.value })
+                      }
                       required
                     />
                   </div>
@@ -73,12 +75,18 @@ const LoginPage = () => {
                       placeholder="••••••••"
                       className="input input-bordered w-full"
                       value={loginData.password}
-                      onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                      onChange={(e) =>
+                        setLoginData({ ...loginData, password: e.target.value })
+                      }
                       required
                     />
                   </div>
 
-                  <button type="submit" className="btn btn-primary w-full" disabled={isPending}>
+                  <button
+                    type="submit"
+                    className="btn btn-primary w-full"
+                    disabled={isPending}
+                  >
                     {isPending ? (
                       <>
                         <span className="loading loading-spinner loading-xs"></span>
@@ -89,8 +97,6 @@ const LoginPage = () => {
                     )}
                   </button>
 
-
-
                   <div className="text-center mt-4">
                     <p className="text-sm">
                       Don't have an account?{" "}
@@ -99,16 +105,12 @@ const LoginPage = () => {
                       </Link>
                     </p>
 
-
                     <p className="text-sm">
                       Forgot Your Password No worries?{" "}
                       <Link to="/password-reset" className="text-primary hover:underline">
-                          forgotPassword
+                        forgotPassword
                       </Link>
                     </p>
-
-
-
                   </div>
                 </div>
               </div>
