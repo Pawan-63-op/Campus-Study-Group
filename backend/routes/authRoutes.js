@@ -17,4 +17,11 @@ router.get('/me', identify, (req, res) => {
         user: req.user
     })
 })
+// :5000/api/auth/logout:1 
+router.post('/logout',(req, res) => {
+    res.clearCookie('jwt').status(200).json({
+        status: 'success',
+        message: 'logout successful'
+    });
+});
 export default router;

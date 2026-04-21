@@ -16,7 +16,6 @@ import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon } from "lucide-rea
 
 import GroupCard from "../components/GroupCard";
 import NoGroupsFound from "../components/NoGroupsFound";
-import RoomCard from "../components/RoomCard";
 const HomePage = () => {
   const queryClient = useQueryClient();
   const [roomTitle, setRoomTitle] = useState("");
