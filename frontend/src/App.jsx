@@ -205,7 +205,9 @@ const App = () => {
           path="/chat/:id"
           element={
             isAuthenticated && isVerified ? (
-              <ChatPage userId={authUser._id} />
+              <Layout showSidebar={true} showNavBar={false}>
+                <ChatPage userId={authUser._id} />
+              </Layout>
             ) : (
               <Navigate to="/login" />
             )
