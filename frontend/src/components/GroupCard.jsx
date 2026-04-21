@@ -4,14 +4,14 @@ const GroupCard = ({ group }) => {
   return (
     <div className="card group bg-base-100 border border-base-300 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-xl h-full">
       
-      {/* Make card-body flex column */}
-      <div className="card-body p-5 flex flex-col h-full">
-        
-        {/* Top Section */}
-        <div>
-          {/* Header */}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold tracking-tight truncate">
+        {/* Make card-body flex column */}
+        <div className="card-body p-[1.2rem] flex flex-col h-full">
+          
+            {/* Top Section */}
+            <div>
+              {/* Header */}
+              <div className="mb-[0.9rem]">
+                <h3 className="text-lg font-semibold tracking-tight truncate">
               {group.group_name}
             </h3>
             <div className="mt-1 h-1 w-12 rounded-full bg-primary/40" />

@@ -18,6 +18,7 @@ const MessageCard = ({ msg, isOwn }) => {
                 )}
 
                 {/* TEXT */}
+                
                 {msg.content && (
                     <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
                         {msg.content}
@@ -26,9 +27,9 @@ const MessageCard = ({ msg, isOwn }) => {
 
                 {/* FILES */}
                 {msg.fetchables?.length > 0 && (
-                    <div className="mt-3 space-y-2">``
-                        {msg.fetchables.map((file, i) => {
-                            if (file.type === "image") {
+                    <div className="mt-[0.7rem] space-y-[0.48rem]">``
+                            {msg.fetchables.map((file, i) => {
+                                if (file.type === "image") {
                                 return (
                                     <img
                                         key={i}
@@ -67,7 +68,7 @@ const MessageCard = ({ msg, isOwn }) => {
                 )}
 
                 {/* TIME */}
-                <div className="mt-1 text-[10px] opacity-60 text-right">
+                <div className="mt-1 text-[10px] opacity-69 text-right">
                     {new Date(msg.timestamp).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",

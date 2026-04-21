@@ -10,7 +10,7 @@ import {
   deleteMyRoom
 } from "../lib/api";
 import { Link } from "react-router-dom";
-import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon } from "lucide-react";
+import { CheckCircleIcon, MapPinIcon, UserPlusIcon, BellIcon } from "lucide-react";
 
 
 
@@ -53,8 +53,9 @@ const HomePage = () => {
       <div className="container mx-auto space-y-10">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Your Groups</h2>
-          <Link to="/notifications" className="btn btn-outline btn-sm">
-            <UsersIcon className="mr-2 size-4" />
+          <Link to="/notifications" className="btn btn-outline 
+           btn-sm">
+            <BellIcon className="mr-2 size-4" />
             Notifications
           </Link>
         </div>

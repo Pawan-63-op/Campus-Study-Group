@@ -17,10 +17,10 @@ const Sidebar = () => {
         </Link>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1">
-        <Link
-          to="/"
-          className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/" ? "btn-active" : ""
+        <nav className="flex-[0.98] p-[0.95rem] space-y-[0.2rem]">
+          <Link
+            to="/"
+            className={`btn btn-ghost justify-start w-[98%] gap-[0.7rem] px-[0.7rem] normal-case ${currentPath === "/" ? "btn-active" : ""
             }`}
         >
           <HomeIcon className="size-5 text-base-content opacity-70" />

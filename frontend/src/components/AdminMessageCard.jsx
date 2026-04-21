@@ -5,21 +5,21 @@ const AdminMessageCard = ({
   socket,
 }) => {
   return (
-    <div className="grid grid-cols-[200px_1fr_120px] gap-4 px-6 py-4 items-center hover:bg-gray-50 transition">
+    <div className="grid grid-cols-[200px_1fr_120px] gap-[0.95rem] px-[1.4rem] py-[0.9rem] items-center hover:bg-gray-50 transition">
 
-      {/* SENDER */}
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-sm font-semibold">
-          {msg.sender_name?.[0] || "U"}
+        {/* SENDER */}
+        <div className="flex items-center gap-[0.72rem]">
+          <div className="w-[1.95rem] h-[1.95rem] rounded-full bg-blue-200 flex items-center justify-center text-sm font-semibold">
+            {msg.sender_name?.[0] || "U"}
+          </div>
+          <span className="text-sm font-medium truncate">
+            {msg.sender_name || "Unknown"}
+          </span>
         </div>
-        <span className="text-sm font-medium truncate">
-          {msg.sender_name || "Unknown"}
-        </span>
-      </div>
 
-      {/* MESSAGE */}
-      <div className="flex flex-col gap-1 pr-4">
-        {msg.content && (
+        {/* MESSAGE */}
+        <div className="flex flex-col gap-[0.22rem] pr-[0.95rem]">
+          {msg.content && (
           <p className="text-sm text-gray-700 truncate">
             {msg.content}
           </p>
