@@ -3,67 +3,39 @@ const AdminMessageCard = ({
   msg,
   userId,
   socket,
-  isOwn,
 }) => {
   return (
-    <div className={`flex w-full ${isOwn ? "justify-end" : "justify-start"}`}>
-      <div
-        className={`
-          max-w-[75%] rounded-2xl px-4 py-3 shadow-sm
-          border border-base-300/60
-          ${isOwn
-            ? "bg-primary text-primary-content"
-            : "bg-base-200 text-base-content"}
-        `}
-      >
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-1">
-          <p className="text-sm font-medium">
-            {msg.sender_name || "Unknown"}
-          </p>
+    <div className="grid grid-cols-[200px_1fr_120px] gap-4 px-6 py-4 items-center hover:bg-gray-50 transition">
 
-          <button
-            className="btn btn-xs btn-ghost"
-            onClick={() => {
-              console.log("Deleting:", msg.message_id);
-
-              socket.emit("delete-post", {
-                groupChatId,
-                userId,
-                postId: msg.message_id,
-              });
-            }}
-          >
-            🗑️
-          </button>
+      {/* SENDER */}
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-sm font-semibold">
+          {msg.sender_name?.[0] || "U"}
         </div>
+        <span className="text-sm font-medium truncate">
+          {msg.sender_name || "Unknown"}
+        </span>
+      </div>
 
-        {/* TEXT */}
+      {/* MESSAGE */}
+      <div className="flex flex-col gap-1 pr-4">
         {msg.content && (
-          <p className="text-sm whitespace-pre-wrap break-words">
+          <p className="text-sm text-gray-700 truncate">
             {msg.content}
           </p>
         )}
 
         {/* FILES */}
         {msg.fetchables?.length > 0 && (
-          <div className="mt-2 space-y-2">
+          <div className="flex flex-wrap gap-2 mt-1">
             {msg.fetchables.map((file, i) => {
               if (file.type === "image") {
                 return (
                   <img
                     key={i}
                     src={file.url}
-                    className="rounded-xl max-h-60 w-full object-cover"
+                    className="h-12 w-12 object-cover rounded"
                   />
-                );
-              }
-
-              if (file.type === "video") {
-                return (
-                  <video key={i} controls className="rounded-xl max-h-60 w-full">
-                    <source src={file.url} />
-                  </video>
                 );
               }
 
@@ -73,9 +45,9 @@ const AdminMessageCard = ({
                   href={file.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-sm underline"
+                  className="text-xs underline text-blue-600"
                 >
-                  📎 Open file
+                  File
                 </a>
               );
             })}
@@ -83,12 +55,28 @@ const AdminMessageCard = ({
         )}
 
         {/* TIME */}
-        <div className="text-[10px] opacity-60 text-right mt-1">
+        <span className="text-[10px] text-gray-400">
           {new Date(msg.timestamp).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
           })}
-        </div>
+        </span>
+      </div>
+
+      {/* DELETE */}
+      <div className="flex justify-center">
+        <button
+          className="p-2 rounded-full hover:bg-red-100 text-red-500"
+          onClick={() => {
+            socket.emit("delete-post", {
+              groupChatId,
+              userId,
+              postId: msg.message_id,
+            });
+          }}
+        >
+          🗑️
+        </button>
       </div>
     </div>
   );

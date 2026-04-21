@@ -136,53 +136,51 @@ const ManageChatPage = () => {
       </div>
     );
   }
+return (
+  <div className="h-screen flex flex-col bg-gray-50">
 
-  return (
-    <div className="flex flex-col h-full">
-
-      {/* MESSAGES */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {messages.map((msg, idx) => (
-          <AdminMessageCard
-            key={msg.message_id || idx}
-            msg={msg}
-            isOwn={msg.sender_id === userId}
-            userId={userId}
-            groupChatId={groupChatId}
-            socket={socket}
-          />
-        ))}
-        <div ref={bottomRef} />
-      </div>
-
-      {/* INPUT */}
-      <div className="p-4 border-t flex gap-2">
-
-        <input
-          type="text"
-          className="input input-bordered flex-1"
-          placeholder="Type message..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-
-        <input
-          type="file"
-          multiple
-          onChange={(e) => {
-            setFiles(Array.from(e.target.files));
-          }}
-        />
-
-        <button
-          className="btn btn-primary"
-          onClick={handleSend}
-        >
-          Send
-        </button>
+    {/* HEADER */}
+    <div className="h-16 px-6 flex items-center justify-between border-b bg-white">
+      <div>
+        <h2 className="text-lg font-semibold">Message Moderation</h2>
+        <p className="text-xs text-gray-500">
+          Review and manage group messages
+        </p>
       </div>
     </div>
-  );
+
+    {/* MESSAGE LIST */}
+    <div className="flex-1 overflow-y-auto p-6">
+
+      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+
+        {/* TABLE HEADER */}
+        <div className="grid grid-cols-[200px_1fr_120px] gap-4 px-6 py-3 text-xs font-semibold text-gray-500 border-b bg-gray-50">
+          <div>Sender</div>
+          <div>Message</div>
+          <div className="text-center">Action</div>
+        </div>
+
+        {/* MESSAGES */}
+        <div className="divide-y">
+          {messages.map((msg, idx) => (
+            <AdminMessageCard
+              key={msg.message_id || idx}
+              msg={msg}
+              isOwn={msg.sender_id === userId}
+              userId={userId}
+              groupChatId={groupChatId}
+              socket={socket}
+            />
+          ))}
+        </div>
+
+      </div>
+
+      <div ref={bottomRef} />
+    </div>
+  </div>
+);
 };
 
 export default ManageChatPage;

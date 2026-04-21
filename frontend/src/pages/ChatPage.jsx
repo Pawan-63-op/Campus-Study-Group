@@ -53,7 +53,7 @@ const uploadToCloudinary = async (file) => {
 const ChatPage = () => {
   const { isLoading, authUser } = useAuthUser();
   const { id: groupChatId } = useParams();
-
+  const fileInputRef = useRef(null);
   const userId = authUser?.userID;
 
   const [messages, setMessages] = useState([]);
@@ -134,6 +134,11 @@ const ChatPage = () => {
 
     setContent("");
     setFiles([]);
+    setContent("");
+// 🔥 THIS LINE FIXES YOUR ISSUE
+if (fileInputRef.current) {
+  fileInputRef.current.value = "";
+}
   };
 
   if (isLoading) {
@@ -181,12 +186,15 @@ const ChatPage = () => {
           onChange={(e) => setContent(e.target.value)}
         />
 
-        <input
-          type="file"
-          multiple
-          className="text-sm"
-          onChange={(e) => setFiles(Array.from(e.target.files))}
-        />
+<input
+  type="file"
+  multiple
+  ref={fileInputRef}
+  onChange={(e) => {
+    const selected = Array.from(e.target.files);
+    setFiles(selected);
+  }}
+/>
 
         <button
           className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700"

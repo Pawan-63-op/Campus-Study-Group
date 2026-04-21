@@ -218,7 +218,10 @@ const App = () => {
           path="/Managechat/:id"
           element={
             isAuthenticated && isVerified ? (
+              <Layout showSidebar={true} showNavBar={false}>
               <ManageChatPage userId={authUser._id} />
+              
+              </Layout>
             ) : (
               <Navigate to="/login" />
             )
