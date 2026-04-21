@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
-import useAuthUser from "../hooks/useAuthUser";
-import MessageCard from "../components/MessageCard.jsx";
+import useAuthUser from "../hooks/useAuthUser.js";
+import AdminMessageCard from "../components/AdminMessageCard.jsx";
 
-const socket = io("http://localhost:5002");
+// 🔥 create ONE socket instance
+const socket = io("http://localhost:5002", {
+  autoConnect: true,
+});
 
-// 🔥 correct type detection from File
 const getFileTypeFromFile = (file) => {
   const type = file.type;
 
@@ -18,35 +20,26 @@ const getFileTypeFromFile = (file) => {
   return "other";
 };
 
-// 🔥 upload function
 const uploadToCloudinary = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", "chat_uploads");
 
-  console.log("Uploading:", file.name);
-
   const res = await fetch(
     "https://api.cloudinary.com/v1_1/ddj28rrje/auto/upload",
     {
       method: "POST",
-      body: formData
+      body: formData,
     }
   );
 
   const data = await res.json();
 
-  if (!data.secure_url) {
-    throw new Error("Upload failed");
-  }
-
-  const file_type = getFileTypeFromFile(file); // ✅ FIXED
-
-  console.log("Uploaded:", data.secure_url, file_type);
+  if (!data.secure_url) throw new Error("Upload failed");
 
   return {
     url: data.secure_url,
-    type: file_type
+    type: getFileTypeFromFile(file),
   };
 };
 
@@ -62,23 +55,37 @@ const ManageChatPage = () => {
 
   const bottomRef = useRef();
 
-  // 🔥 JOIN + LISTEN
+  // 🔥 SOCKET SETUP
   useEffect(() => {
     if (!groupChatId) return;
 
+    console.log("Joining room:", groupChatId);
+
     socket.emit("join-group-chat", { groupChatId });
 
-    socket.on("chat-history", (history) => {
+    const handleHistory = (history) => {
       setMessages(history);
-    });
+    };
 
-    socket.on("receive-message", (msg) => {
+    const handleReceive = (msg) => {
       setMessages((prev) => [...prev, msg]);
-    });
+    };
+
+    const handleDelete = ({ msgId }) => {
+      console.log("Deleting message in UI:", msgId);
+      setMessages((prev) =>
+        prev.filter((m) => m.message_id !== msgId)
+      );
+    };
+
+    socket.on("chat-history", handleHistory);
+    socket.on("receive-message", handleReceive);
+    socket.on("message-deleted", handleDelete);
 
     return () => {
-      socket.off("chat-history");
-      socket.off("receive-message");
+      socket.off("chat-history", handleHistory);
+      socket.off("receive-message", handleReceive);
+      socket.off("message-deleted", handleDelete);
     };
   }, [groupChatId]);
 
@@ -89,8 +96,6 @@ const ManageChatPage = () => {
 
   // 🔥 SEND MESSAGE
   const handleSend = async () => {
-    console.log("SEND CLICKED", files);
-
     if (!content && files.length === 0) return;
 
     let fetchables = [];
@@ -100,21 +105,22 @@ const ManageChatPage = () => {
         files.map((file) => uploadToCloudinary(file))
       );
     } catch (err) {
-      console.error("Upload error:", err);
-      return; // stop if upload fails
+      console.error("Upload failed:", err);
+      return;
     }
 
     const message = {
       message_id: Date.now().toString(),
       sender_id: userId,
+      sender_name: authUser?.username || "Admin",
       content,
       fetchables,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     socket.emit("send-message", {
       groupChatId,
-      message
+      message,
     });
 
     setMessages((prev) => [...prev, message]);
@@ -137,10 +143,13 @@ const ManageChatPage = () => {
       {/* MESSAGES */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((msg, idx) => (
-          <MessageCard
+          <AdminMessageCard
             key={msg.message_id || idx}
             msg={msg}
             isOwn={msg.sender_id === userId}
+            userId={userId}
+            groupChatId={groupChatId}
+            socket={socket}
           />
         ))}
         <div ref={bottomRef} />
@@ -161,14 +170,11 @@ const ManageChatPage = () => {
           type="file"
           multiple
           onChange={(e) => {
-            const selected = Array.from(e.target.files);
-            console.log("FILES SELECTED:", selected);
-            setFiles(selected);
+            setFiles(Array.from(e.target.files));
           }}
         />
 
         <button
-          type="button"
           className="btn btn-primary"
           onClick={handleSend}
         >

@@ -310,9 +310,11 @@ import mongoose from "mongoose";
 export async function get_groups_by_id_then_semantically(req, res) {
     try {
         const query = req.body.query;
-
+        const userId = req.user.userID;
         if (!query || query.trim() === "") {
-            const groups = await GroupChat.find().limit(10);
+            const groups = await GroupChat.find({
+                group_members: { $ne: userId }
+            }).limit(10);
             return res.status(200).json({
                 result: groups,
                 status: "ok",

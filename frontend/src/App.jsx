@@ -23,7 +23,7 @@ import AdminGroupsPage from "./pages/AdminGroupsPage.jsx";
 import SearchGroupsPage from "./pages/SearchGroupsPage.jsx";
 import AddSessionPage from "./pages/AddSessionPage.jsx";
 import ViewSessionsPage from "./pages/ViewSessionsPage.jsx";
-import ManageChatPage from "";
+import ManageChatPage from "../src/pages/ManageChatPage.jsx";
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
   const { theme } = useThemeStore();
@@ -213,7 +213,7 @@ const App = () => {
         />
 
         <Route
-          path="/Managechat/:groupId"
+          path="/Managechat/:id"
           element={
             isAuthenticated && isVerified ? (
               <ManageChatPage userId={authUser._id} />

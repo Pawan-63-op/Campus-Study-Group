@@ -76,6 +76,13 @@ const ChatPage = () => {
       setMessages((prev) => [...prev, msg]);
     });
 
+    socket.on("message-deleted",({msgId})=>{
+      // socket.emit("join-group-chat", { groupChatId });
+      setMessages((prev) => prev.filter(m => m.message_id !== msgId));
+      // work around to get the chat history again after deletion. Can be optimized by removing the deleted message from the state instead of fetching everything again.
+    });
+    
+
     return () => {
       socket.off("chat-history");
       socket.off("receive-message");
@@ -107,6 +114,7 @@ const ChatPage = () => {
     const message = {
       message_id: Date.now().toString(),
       sender_id: userId,
+      sender_name: authUser?.username || "Unknown",
       content,
       fetchables,
       timestamp: new Date().toISOString()

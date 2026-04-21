@@ -7,7 +7,7 @@ import Redis from "ioredis";
 import { GroupChat } from "./models/groupChat.js";
 import jwt from "jsonwebtoken";
 import { sql } from "./dbUtils/sql_utl/sql_connector.js";
-import {connectToDatabase} from "../backend/dbUtils/mongoConnect.js"
+import { connectToDatabase } from "../backend/dbUtils/mongoConnect.js"
 import { configDotenv } from "dotenv";
 await configDotenv();
 const app = express();
@@ -81,27 +81,20 @@ io.on("connection", async (socket) => {
 
     socket.on("delete-post", async ({ groupChatId, userId, postId }) => {
         try {
+            console.log("DELETE RECEIVED:", postId);
             const users = await sql`SELECT * FROM users WHERE userID = ${userId}`;
-            if (users.length === 0) {
-                return socket.emit("error", { error: "Invalid user" });
-            }
-            if (!groupChatId || !postId) {
-                return socket.emit("error", { error: "Missing groupChatId or postId" });
-            }
-            const group = await GroupChat.findById(groupChatId);
-            if (!group) {
-                return socket.emit("error", { error: "Group not found" });
-            }
+            if (users.length === 0) return;
 
-            if (!group.group_admins?.map(String).includes(String(userId))) {
-                return socket.emit("error", { error: "Only admins can delete posts" });
-            }
+            const group = await GroupChat.findById(groupChatId);
+            if (!group) return;
+
+            if (!group.group_admins?.map(String).includes(String(userId))) return;
+
             const newMessages = group.messages.filter(
                 msg => String(msg.message_id) !== String(postId)
             );
 
             group.messages = newMessages;
-
             await group.save();
 
             await redis.del(groupChatId);
@@ -112,18 +105,13 @@ io.on("connection", async (socket) => {
                 );
             }
 
-            socket.to(groupChatId).emit("deleted-post", {
-                postId,
-                groupChatId
-            });
-            socket.emit("delete-post-success", {
-                postId,
-                groupChatId
+            // ✅ single correct emit
+            io.to(groupChatId).emit("message-deleted", {
+                msgId: postId
             });
 
         } catch (err) {
             console.error(err);
-            socket.emit("error", { error: "Invalid token or server error" });
         }
     });
 

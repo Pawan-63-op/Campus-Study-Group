@@ -12,6 +12,7 @@ const groupChatSchema = new mongoose.Schema({
         {
             message_id: { type: String, required: true },
             sender_id: { type: String, required: true },
+            sender_name: { type: String, required: false },
             content: { type: String },
             fetchables: [
                 {

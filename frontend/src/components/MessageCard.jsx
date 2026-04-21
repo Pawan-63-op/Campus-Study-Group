@@ -9,7 +9,14 @@ const MessageCard = ({ msg, isOwn }) => {
                         ? "bg-primary text-primary-content rounded-br-none"
                         : "bg-base-200 text-base-content rounded-bl-none"}
                 `}
+
             >
+                {(
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
+                        {msg.sender_name || "Unknown"}:
+                    </p>
+                )}
+
                 {/* TEXT */}
                 {msg.content && (
                     <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
