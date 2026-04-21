@@ -2,6 +2,7 @@ import http from "http"
 import express from "express"
 // import jwt from "jsonwebtoken";
 import { Server } from "socket.io"
+import mysql from "mysql2/promise";
 //  we will use a bit of in memory store aswell... no problem
 import Redis from "ioredis";
 import { GroupChat } from "./models/groupChat.js";
@@ -31,15 +32,25 @@ io.on("connection", async (socket) => {
     console.log("new socket connected : ", socket.id);
     socket.on("join-group-chat", async ({ groupChatId }) => {
         socket.join(groupChatId);
+        const group = await GroupChat.findById(groupChatId);
+            if (!group) return;
 
         const raw = await redis.lrange(groupChatId, 0, -1);
         let history;
-
+        const memberIds = group.group_members.map(Number);
+        let users = [];
+        for (const memberId of memberIds) {
+            const user = await sql`SELECT * FROM users WHERE userID = ${memberId}`;
+            if (user.length > 0) {
+                users.push(user[0]);
+            }
+        }
+        console.log("GROUP MEMBERS:", group.group_members);
+        console.log("USERS IN CHAT:", group.group_members, users);
         if (raw.length > 0) {
             history = raw.map(r => JSON.parse(r));
         } else {
-            const group = await GroupChat.findById(groupChatId);
-            if (!group) return;
+            
 
             history = group.messages;
 
@@ -48,7 +59,7 @@ io.on("connection", async (socket) => {
             }
         }
         console.log(history);
-
+        socket.emit("chat-users",users);
         socket.emit("chat-history", history);
     });
 

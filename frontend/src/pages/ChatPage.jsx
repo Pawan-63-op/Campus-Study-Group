@@ -59,7 +59,7 @@ const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
   const [files, setFiles] = useState([]);
-
+  const [users,setUsers] = useState([]);
   const bottomRef = useRef();
 
   // 🔥 JOIN + LISTEN
@@ -70,6 +70,11 @@ const ChatPage = () => {
 
     socket.on("chat-history", (history) => {
       setMessages(history);
+    });
+    socket.on("chat-users",(users)=>{
+      console.log("USERS IN CHAT:", users);
+      // made it work some how 
+      setUsers(users);
     });
 
     socket.on("receive-message", (msg) => {

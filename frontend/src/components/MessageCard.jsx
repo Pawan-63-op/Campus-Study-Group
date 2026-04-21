@@ -26,7 +26,7 @@ const MessageCard = ({ msg, isOwn }) => {
 
                 {/* FILES */}
                 {msg.fetchables?.length > 0 && (
-                    <div className="mt-3 space-y-2">
+                    <div className="mt-3 space-y-2">``
                         {msg.fetchables.map((file, i) => {
                             if (file.type === "image") {
                                 return (
